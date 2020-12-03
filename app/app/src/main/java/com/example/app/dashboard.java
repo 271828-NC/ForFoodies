@@ -21,15 +21,15 @@ public class dashboard extends AppCompatActivity {
     ImageView avatar;
     int countExit = 0;
 
-    public void onBackPressed() {
-
-        countExit++;
-        Toast.makeText(dashboard.this, "On second press the app will close!", Toast.LENGTH_SHORT).show();
-        if (countExit == 2)
-            finishAndRemoveTask();
-
-
-    }
+//    public void onBackPressed() {
+//
+//        countExit++;
+//        Toast.makeText(dashboard.this, "On second press the app will close!", Toast.LENGTH_SHORT).show();
+//        if (countExit == 2)
+//            System.exit(0);
+//
+//
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

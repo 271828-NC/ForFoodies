@@ -115,8 +115,7 @@ public class detailed_review extends AppCompatActivity {
                         }
                         if (u.getUid().equals(log.getUid()))
                             uPath = u.getUid();
-                        if (!(u.getUid().equals(log.getUid())) && log.getType() != 3)
-                            delete.setVisibility(View.GONE);
+
                     }
                 }
             }
@@ -126,6 +125,11 @@ public class detailed_review extends AppCompatActivity {
 
             }
         });
+        int ok=0;
+        if (r.getReviewerID().equals(log.getUid()))
+            ok=1;
+        else if(log.getType() != 3|| ok==0)
+            delete.setVisibility(View.GONE);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

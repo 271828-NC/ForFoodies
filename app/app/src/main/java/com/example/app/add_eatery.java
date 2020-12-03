@@ -130,6 +130,7 @@ public class add_eatery extends AppCompatActivity {
                                                 dbref.child(dbref.push().getKey()).setValue(e);
                                                 Toast.makeText(add_eatery.this, "Eatery added !", Toast.LENGTH_SHORT).show();
                                                 startActivity(new Intent(getBaseContext(), dashboard.class));
+                                                finish();
 
                                             }
                                         });
@@ -168,6 +169,7 @@ public class add_eatery extends AppCompatActivity {
                                                     dbref.child(dbref.push().getKey()).setValue(e);
                                                     Toast.makeText(add_eatery.this, "Eatery added !", Toast.LENGTH_SHORT).show();
                                                     startActivity(new Intent(getBaseContext(), dashboard.class));
+                                                    finish();
 
                                                 }
                                             });
