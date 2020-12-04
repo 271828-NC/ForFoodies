@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import java.util.Calendar;
 import java.util.Date;
-
+//class that holds the review information
 public class Review implements Parcelable {
     String review;
     String reviewerID;

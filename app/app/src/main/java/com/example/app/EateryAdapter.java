@@ -3,7 +3,6 @@ package com.example.app;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,8 +13,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class RecycleView_Adapter extends RecyclerView.Adapter<RecycleView_Adapter.holder> {
-    public RecycleView_Adapter(ArrayList<Eatery> list, holder.OnCardClickedListener _listener) {
+//The booking adapter  puts the list of eateries inside the recycle view
+public class EateryAdapter extends RecyclerView.Adapter<EateryAdapter.holder> {
+    public EateryAdapter(ArrayList<Eatery> list, holder.OnCardClickedListener _listener) {
         this.list = list;
         listener = _listener;
     }
@@ -33,6 +33,7 @@ public class RecycleView_Adapter extends RecyclerView.Adapter<RecycleView_Adapte
 
     @Override
     public void onBindViewHolder(@NonNull holder hold, int position) {
+        //put information in the card
         hold.tv.setText(list.get(position).getName());
         hold.tv2.setText(list.get(position).getDescription());
         Picasso.get().load((list.get(position)).getUrl()).fit().into(hold.iv);

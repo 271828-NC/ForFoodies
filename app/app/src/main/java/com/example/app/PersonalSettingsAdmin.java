@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-public class personalSettingsAdmin extends AppCompatActivity {
+public class PersonalSettingsAdmin extends AppCompatActivity {
     ImageView personal_settings, admin_settings, admin_bookings;
-
+    //similar to standar or critic user with the exception of  admin who can promote users to critics
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,14 +25,14 @@ public class personalSettingsAdmin extends AppCompatActivity {
         admin_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getBaseContext(), admin.class));
+                startActivity(new Intent(getBaseContext(), Admin.class));
             }
         });
 
         personal_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getBaseContext(), personalsettings.class));
+                startActivity(new Intent(getBaseContext(), PersonalSettings.class));
             }
         });
         admin_bookings.setOnClickListener(new View.OnClickListener() {

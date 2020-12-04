@@ -22,10 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.util.Calendar;
-import java.util.Date;
-
-public class add_reviews extends AppCompatActivity {
+public class AddReviews extends AppCompatActivity {
     ImageView header, userPic;
     TextView eName, eLocation, uName, uType;
     Button addR;
@@ -41,7 +38,9 @@ public class add_reviews extends AppCompatActivity {
         setContentView(R.layout.activity_add_reviews);
         //        hide the actionbar
         getSupportActionBar().hide();
+        //saving the logged user
         final User u = ((logged) getApplication()).getLogged();
+        //saving the eatery for which we add a review
         final Eatery e = getIntent().getParcelableExtra("Eatery");
         header = findViewById(R.id.iv_review_eatery);
         userPic = findViewById(R.id.iv_review_user);
@@ -52,8 +51,9 @@ public class add_reviews extends AppCompatActivity {
         addReview = findViewById(R.id.et_review);
         rating = findViewById(R.id.ratingBar);
         addR = findViewById(R.id.btn_add_review);
-
+        //loading the eatery picture
         Picasso.get().load(e.getUrl()).fit().into(header);
+        //displaying the user details
         eName.setText(e.getName());
         eLocation.setText(e.getLocation());
         uName.setText(u.getLogin());
@@ -77,7 +77,7 @@ public class add_reviews extends AppCompatActivity {
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     Eatery eatery = ds.getValue(Eatery.class);
                     if (eatery.getName().equals(e.getName()) && eatery.getLocation().equals(e.getLocation())) {
-                        path = ds.getKey();
+                        path = ds.getKey();//we get the key of eatery reviewed
                         break;
                     }
                 }
@@ -91,13 +91,12 @@ public class add_reviews extends AppCompatActivity {
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("_reviews_");
         Picasso.get().load(u.getUrl()).fit().into(userPic);
 
-//        Date reviewTime= Calendar.getInstance().getTime();
-//        reviewTime.getTime();
-//        Toast.makeText(add_reviews.this,reviewTime.toString(),Toast.LENGTH_LONG).show();
-        //rating bar
+
+
         addR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //get the  review information and validate it
                 String reviewText = addReview.getText().toString().trim();
                 if (TextUtils.isEmpty(reviewText)) {
                     addReview.setError("Please add your review !");
@@ -105,17 +104,18 @@ public class add_reviews extends AppCompatActivity {
                 }
                 ratingVal = rating.getRating();
                 if (ratingVal == 0)
-                    Toast.makeText(add_reviews.this, "Please select a rating !", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddReviews.this, "Please select a rating !", Toast.LENGTH_SHORT).show();
                 else {
-//                    Date reviewTime= Calendar.getInstance().getTime();
-//                    reviewTime.getTime();
+
                     String npath = ref.push().getKey();
+                    //create review with no ratings
                     Review review = new Review(reviewText, FirebaseAuth.getInstance().getCurrentUser().getUid(), e.getName(), ratingVal, 0, 0, npath);
+                    //update eatery rating in firebase
                     dbref.child(path).child("rating").setValue(e.getRating() + ratingVal);
                     dbref.child(path).child("ratingNr").setValue(e.getRatingNr() + 1);
-                    ref.child(npath).setValue(review);
-                    Toast.makeText(add_reviews.this, "Review Added!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getBaseContext(), dashboard.class));
+                    ref.child(npath).setValue(review);//add review to firebase
+                    Toast.makeText(AddReviews.this, "Review Added!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getBaseContext(), Dashboard.class));
                     finish();
 
                 }

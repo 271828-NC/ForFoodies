@@ -1,7 +1,7 @@
 package com.example.app;
 
 import java.util.Date;
-
+//Class that holds the bookings
 public class Booking implements Comparable<Booking> {
     private int day;
     private int year;

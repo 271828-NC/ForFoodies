@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-public class settings extends AppCompatActivity {
+public class Settings extends AppCompatActivity {
     ImageView personal_settings, bookings;
     Button logout;
 
@@ -29,7 +29,7 @@ public class settings extends AppCompatActivity {
         personal_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), personalsettings.class);
+                Intent i = new Intent(getBaseContext(), PersonalSettings.class);
                 startActivity(i);
             }
         });
@@ -50,7 +50,7 @@ public class settings extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), Login.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 Toast.makeText(getBaseContext(), "Logout Successful!", Toast.LENGTH_SHORT).show();

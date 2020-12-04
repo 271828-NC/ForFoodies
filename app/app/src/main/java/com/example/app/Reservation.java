@@ -15,10 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.lang.reflect.Array;
-import java.util.Date;
-
-public class reservation extends AppCompatActivity {
+public class Reservation extends AppCompatActivity {
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference("_bookings_");
     CalendarView calendar;
     TextView name;
@@ -45,7 +42,8 @@ public class reservation extends AppCompatActivity {
             public void onSelectedDayChange(CalendarView view, int year, int month,
                                             int dayOfMonth) {
                 booking = new Booking(year, month, dayOfMonth, 0, e.getName(), FirebaseAuth.getInstance().getCurrentUser().getUid());
-                Toast.makeText(reservation.this, "Date Selected !", Toast.LENGTH_SHORT).show();// TODO Auto-generated method stub
+                Toast.makeText(Reservation.this, "Date Selected !", Toast.LENGTH_SHORT).show();
+                //When clicked on the calendar widget a booking object will be created with the date selected
 
             }
         });
@@ -55,12 +53,12 @@ public class reservation extends AppCompatActivity {
                 double time = 0;
                 try {
                     time = Double.parseDouble(hour.getText().toString());
-                    if (time < 11 || time > 18)
+                    if (time < 11 || time > 18)//select anf validate the time
                         hour.setError("We are not open at that time");
                     else {
                         booking.setHour(time);
                         dbref.child(dbref.push().getKey()).setValue(booking);
-                        startActivity(new Intent(getBaseContext(), dashboard.class));
+                        startActivity(new Intent(getBaseContext(), Dashboard.class));
                     }
                 } catch (Exception exception) {
                     hour.setError("Please enter a valid time");

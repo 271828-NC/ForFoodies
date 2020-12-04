@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".add_eatery">
+    tools:context=".AddEatery">
 
     <View
         android:id="@+id/view37"

@@ -17,7 +17,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-public class user_profile extends AppCompatActivity {
+//class that displays a page with users details to see or check others profile
+public class UserProfile extends AppCompatActivity {
     TextView name, login, email, level;
     ImageView profilePic;
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference("_user_");

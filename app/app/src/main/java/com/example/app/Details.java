@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 public class Details extends AppCompatActivity {
-
+    //Details will  hold the rating of the restaurant and options to add, read review and booking
     ImageView iv, info;
     TextView name, specifc, location, desc;
     Button read, add, reservation;
@@ -35,24 +35,23 @@ public class Details extends AppCompatActivity {
         read = findViewById(R.id.btn_r);
         add = findViewById(R.id.btn_ar);
         reservation = findViewById(R.id.btn_res);
-        final Eatery e = getIntent().getParcelableExtra("Eatery");
+        final Eatery e = getIntent().getParcelableExtra("Eatery");//we get the eatery that was selected
         Picasso.get().load(e.getUrl()).fit().into(iv);
-        name.setText(e.getName());
+        name.setText(e.getName());//load its details
         specifc.setText(e.getServing());
         location.setText(e.getLocation());
         desc.setText(e.getDescription());
         rating.setRating(e.getRating() / e.getRatingNr());
-        if (e.getType().equals("Street Food"))
+        if (e.getType().equals("Street Food"))//Street foods dont have reservations
             reservation.setVisibility(View.GONE);
 //        get info page
         info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getBaseContext(), info.class));
+                startActivity(new Intent(getBaseContext(), Info.class));
             }
         });
-//        back button
-        if (e.getType().equals("Restaurant"))
+        if (e.getType().equals("Restaurant"))//Only a critic can review a restaurant
             if (((logged) getApplication()).getLogged().getType() == 1 || ((logged) getApplication()).getLogged().getType() == 3)
                 add.setVisibility(View.GONE);
 
@@ -60,7 +59,7 @@ public class Details extends AppCompatActivity {
         reservation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Details.this, reservation.class);
+                Intent intent = new Intent(Details.this, Reservation.class);
                 intent.putExtra("Eatery", e);
                 startActivity(intent);
             }
@@ -70,12 +69,13 @@ public class Details extends AppCompatActivity {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), add_reviews.class);
+                Intent i = new Intent(getBaseContext(), AddReviews.class);
                 i.putExtra("Eatery", e);
                 startActivity(i);
 
             }
         });
+        //read review
         read.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

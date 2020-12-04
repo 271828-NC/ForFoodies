@@ -2,7 +2,7 @@ package com.example.app;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
+//class that holds a eatery
 public class Eatery implements Parcelable, Comparable<Eatery> {
     private String name;
     private String url;

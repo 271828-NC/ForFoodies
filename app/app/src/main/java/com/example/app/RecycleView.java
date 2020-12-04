@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -19,23 +18,22 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
-public class RecycleView extends AppCompatActivity implements RecycleView_Adapter.holder.OnCardClickedListener, ReviewAdapter.Reviewholder.OnCardClickedListener {
+public class RecycleView extends AppCompatActivity implements EateryAdapter.holder.OnCardClickedListener, ReviewAdapter.Reviewholder.OnCardClickedListener {
     ImageView header;
     RecyclerView rv;
     ArrayList<Eatery> list = new ArrayList<>();
     ArrayList<Booking> listB = new ArrayList<>();
     ArrayList<Review> listR = new ArrayList<>();
     DatabaseReference dbref;
-    RecycleView_Adapter adapter;
+    EateryAdapter adapter;
     BookingAdapter adapterB;
     ReviewAdapter adapterR;
     String type;
     String path;
     Eatery e;
     int code;
-
+    //class that will hold the lists of bookings, reviews, eateries
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,15 +45,15 @@ public class RecycleView extends AppCompatActivity implements RecycleView_Adapte
         rv = findViewById(R.id.rv_l);
 
         rv.setLayoutManager(new LinearLayoutManager(RecycleView.this));//LinearLayoutManager.HORIZONTAL,false));
-        path = getIntent().getStringExtra("Path");
-        code = getIntent().getIntExtra("Code", 0);
-        int head = getIntent().getIntExtra("Header", 0);
+        path = getIntent().getStringExtra("Path");//what type of items are displayed
+        code = getIntent().getIntExtra("Code", 0);//what variation of a type of item are dysplayed
+        int head = getIntent().getIntExtra("Header", 0);//the header for each list
         if (head == 1)
             header.setImageResource(R.drawable.restaurants);
         else if (head == 2)
             header.setImageResource(R.drawable.streetfoodheader);
         dbref = FirebaseDatabase.getInstance().getReference(path);
-        if (code == 1) {
+        if (code == 1) {//eateries
             type = getIntent().getStringExtra("Type");
             dbref.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -63,11 +61,11 @@ public class RecycleView extends AppCompatActivity implements RecycleView_Adapte
                     for (DataSnapshot dss : snapshot.getChildren()) {
                         Eatery e = dss.getValue(Eatery.class);
                         if (e.getType().equals(type))
-                            list.add(e);
+                            list.add(e);//adding the selected types of eateries
 
                     }
-                    Collections.sort(list);
-                    adapter = new RecycleView_Adapter(list, RecycleView.this);
+                    Collections.sort(list);//sorting the list
+                    adapter = new EateryAdapter(list, RecycleView.this);
                     rv.setAdapter(adapter);
                 }
 
@@ -76,7 +74,7 @@ public class RecycleView extends AppCompatActivity implements RecycleView_Adapte
 
                 }
             });
-        } else if (code == 2) {
+        } else if (code == 2) {//bookings
             header.setImageResource(R.drawable.bookingheader);
             dbref.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -86,7 +84,6 @@ public class RecycleView extends AppCompatActivity implements RecycleView_Adapte
                         if (b.getAddress().equals(((logged) getApplication()).getLogged().getUid()))
                             listB.add(b);
                     }
-                    //Collections.sort(listB); need to figure out date
                     adapterB = new BookingAdapter(listB);
                     rv.setAdapter(adapterB);
                 }
@@ -96,8 +93,8 @@ public class RecycleView extends AppCompatActivity implements RecycleView_Adapte
 
                 }
             });
-        } else if (code == 3) {
-            e = getIntent().getParcelableExtra("Eatery");
+        } else if (code == 3) {//reviews
+            e = getIntent().getParcelableExtra("Eatery");//the eatery reviewed
             Picasso.get().load(e.getUrl()).fit().into(header);
             dbref.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -105,9 +102,8 @@ public class RecycleView extends AppCompatActivity implements RecycleView_Adapte
                     for (DataSnapshot dss : snapshot.getChildren()) {
                         Review r = dss.getValue(Review.class);
                         if (r.getEateryName().equals(e.getName()))
-                            listR.add(r);
+                            listR.add(r);//adding the review for the eatery selected
                     }
-                    //Collections.sort(list);
                     adapterR = new ReviewAdapter(listR, ((logged) getApplication()).getLogged(), RecycleView.this);
                     rv.setAdapter(adapterR);
                 }
@@ -126,12 +122,12 @@ public class RecycleView extends AppCompatActivity implements RecycleView_Adapte
     public void OnCardClickedListener(int i) {
         if (code == 1) {
             Intent intent = new Intent(RecycleView.this, Details.class);
-            intent.putExtra("Eatery", list.get(i));
+            intent.putExtra("Eatery", list.get(i));//when clicked it will bring the details activity
             startActivity(intent);
 
         } else if (code == 3) {
-            Intent intent = new Intent(RecycleView.this, detailed_review.class);
-            intent.putExtra("Review", listR.get(i));
+            Intent intent = new Intent(RecycleView.this, DetailedReview.class);
+            intent.putExtra("Review", listR.get(i));//when clicked it will bring the detailed review activity
             startActivity(intent);
         }
     }

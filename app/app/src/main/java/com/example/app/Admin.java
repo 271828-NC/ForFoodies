@@ -4,13 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -19,9 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Field;
-
-public class admin extends AppCompatActivity {
+public class Admin extends AppCompatActivity {
 
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference("_user_");
     String path;
@@ -40,6 +36,7 @@ public class admin extends AppCompatActivity {
         promotion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //get the email address that is promoted and validate it
                 final String mail = criticmail.getText().toString().trim();
                 if (TextUtils.isEmpty(mail)) {
                     criticmail.setError("First Name is required");
@@ -49,12 +46,12 @@ public class admin extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot ds : snapshot.getChildren()) {
-                            User u = ds.getValue(User.class);
+                            User u = ds.getValue(User.class);//find the user with that address
                             if (u.getEmail().equals(mail)) {
                                 path = ds.getKey();
-                                dbref.child(path).child("type").setValue(2);
-                                Toast.makeText(admin.this, "User promoted to critic !", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getBaseContext(), dashboard.class));
+                                dbref.child(path).child("type").setValue(2);//change him to food critic
+                                Toast.makeText(Admin.this, "User promoted to critic !", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(getBaseContext(), Dashboard.class));
                                 finish();
 
                             }

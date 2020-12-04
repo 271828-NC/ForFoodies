@@ -15,30 +15,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
-public class dashboard extends AppCompatActivity {
+public class Dashboard extends AppCompatActivity {
     Button settings, e_restaurant, e_streetfood, logout, addRestaurant, addStreetfood;
     TextView fullname, type;
     ImageView avatar;
-    int countExit = 0;
-
-//    public void onBackPressed() {
-//
-//        countExit++;
-//        Toast.makeText(dashboard.this, "On second press the app will close!", Toast.LENGTH_SHORT).show();
-//        if (countExit == 2)
-//            System.exit(0);
-//
-//
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-        //        hide the actionbar
+        //Creating a database reference towards the users node
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("_user_");
         getSupportActionBar().hide();
-        final User User = ((logged) getApplication()).getLogged();//getting the user type value through the class that extends app
+        //Saving  the logged in user
+        final User User = ((logged) getApplication()).getLogged();
         settings = findViewById(R.id.settings);
         e_restaurant = findViewById(R.id.e_restaurant);
         e_streetfood = findViewById(R.id.e_streetfood);
@@ -48,7 +38,8 @@ public class dashboard extends AppCompatActivity {
         fullname = findViewById(R.id.tv_fullname);
         type = findViewById(R.id.tv_type);
         avatar = findViewById(R.id.avatar);
-        fullname.setText(User.getfName() + " " + User.getlName());
+        fullname.setText(User.getfName() + " " + User.getlName());//Setting the name inside the text view
+        //The switch finds out the type of user is logged in order to display its type
         switch (User.getType()) {
             case 1: {
                 type.setText("Standard User");
@@ -63,27 +54,28 @@ public class dashboard extends AppCompatActivity {
                 break;
             }
         }
-        Picasso.get().load(User.getUrl()).fit().into(avatar);
+        Picasso.get().load(User.getUrl()).fit().into(avatar);//Loading the user profile picture in image view
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), user_profile.class);
-                i.putExtra("User", User);
+            public void onClick(View v) {//Clicking on the profile picture takes him to his profile page
+                Intent i = new Intent(getBaseContext(), UserProfile.class);
+                i.putExtra("User", User);//Adding the user that needs to be displayed
                 startActivity(i);
             }
         });
-        if (User.getType() == 1 || User.getType() == 2)
+        if (User.getType() == 1 || User.getType() == 2)//The add restaurant functionality is not available for anyone but the admin
             addRestaurant.setVisibility(View.INVISIBLE);
 
         //        go to settings page
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {//Takes the user to the settings activity
+                //In the if statement it is differentiated from the users and admins
                 if (((logged) getApplication()).getLogged().getType() == 1 || ((logged) getApplication()).getLogged().getType() == 2) {
-                    Intent i = new Intent(getBaseContext(), settings.class);
+                    Intent i = new Intent(getBaseContext(), Settings.class);
                     startActivity(i);
                 } else if (((logged) getApplication()).getLogged().getType() == 3) {
-                    Intent i = new Intent(getBaseContext(), personalSettingsAdmin.class);
+                    Intent i = new Intent(getBaseContext(), PersonalSettingsAdmin.class);
                     startActivity(i);
                 }
             }
@@ -118,12 +110,12 @@ public class dashboard extends AppCompatActivity {
             }
         });
 
-//      logout btn
+//      logout button
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), Login.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finishAffinity();
@@ -135,7 +127,7 @@ public class dashboard extends AppCompatActivity {
         addRestaurant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), add_eatery.class);
+                Intent i = new Intent(getBaseContext(), AddEatery.class);
                 i.putExtra("Type", "Restaurant");
                 startActivity(i);
             }
@@ -146,7 +138,7 @@ public class dashboard extends AppCompatActivity {
         addStreetfood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getBaseContext(), add_eatery.class);
+                Intent i = new Intent(getBaseContext(), AddEatery.class);
                 i.putExtra("Type", "Street Food");
                 startActivity(i);
             }

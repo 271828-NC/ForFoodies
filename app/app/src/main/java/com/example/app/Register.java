@@ -14,7 +14,6 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,13 +34,14 @@ public class Register extends AppCompatActivity {
 
     public static final int SELECT_PICTURE = 1;
     public static final String URL = "URL";
-    Uri url;
+    private Uri url;
     int ok=0;
     EditText fname, lname, login, email, password;
     Button signup;
     ImageView chooseprofilepic;
     private FirebaseAuth mAuth;
     DatabaseReference dbref;
+    //Creating a storage reference in order to store the image profile
     StorageReference sref = FirebaseStorage.getInstance().getReference("usersProfile");
 
     @Override
@@ -51,10 +51,7 @@ public class Register extends AppCompatActivity {
         //        hide the actionbar
         getSupportActionBar().hide();
         signup = findViewById(R.id.signup);
-
         chooseprofilepic = findViewById(R.id.chooseprofilepic);
-
-
         fname = findViewById(R.id.fname);
         lname = findViewById(R.id.lname);
         login = findViewById(R.id.login);
@@ -73,6 +70,7 @@ public class Register extends AppCompatActivity {
                 final String log = login.getText().toString().trim();
                 final String mail = email.getText().toString().trim();
                 final String pwd = password.getText().toString().trim();
+                //Gathering the details in order to register the user and validate them
                 if (TextUtils.isEmpty(fn)) {
                     fname.setError("First Name is required");
                     return;
@@ -97,6 +95,11 @@ public class Register extends AppCompatActivity {
                     password.setError("Password needs to be 6 characters or more");
                     return;
                 }
+
+                 /*
+                The method  that creates a user with email and password and using try to make sure
+                no error emerges while creating the user with its details
+                * */
                 mAuth.createUserWithEmailAndPassword(mail, pwd).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -110,13 +113,13 @@ public class Register extends AppCompatActivity {
                                         reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                             @Override
                                             public void onSuccess(Uri uri) {
-                                                String downloadURL = uri.toString();
-                                                User user = new User(fn, ln, mail, pwd, log, downloadURL, 1);
-                                                String key = dbref.push().getKey();
-
-                                                dbref.child(key).setValue(user);
-                                                Intent i=new Intent(getBaseContext(),MainActivity.class);
-                                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                                String downloadURL = uri.toString();//Creating image url
+                                                User user = new User(fn, ln, mail, pwd, log, downloadURL, 1);//creating a new user
+                                                String key = dbref.push().getKey();//creating a key
+                                                dbref.child(key).setValue(user);//adding the user to the firebase
+                                                Intent i=new Intent(getBaseContext(), Login.class);
+                                                //We send the user back to the login screen in order to save his details in the global user
+                                                startActivity(new Intent(getApplicationContext(), Login.class));
 
                                             }
                                         });
@@ -148,6 +151,7 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ok=1;
+                //intent for choosing a picture
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -157,27 +161,6 @@ public class Register extends AppCompatActivity {
             }
 
         });
-
-
-
-        /*signup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (fname.getText().length() > 0 && lname.getText().length() > 0 && login.getText().length() > 0 && email.getText().length() > 0 && password.getText().length() > 0) {
-                    User user = new User(fname.getText().toString(), lname.getText().toString(),email.getText().toString(),password.getText().toString(), login.getText().toString());
-                    dbref.child(dbref.push().getKey()).setValue(user);
-
-                    Intent i = new Intent(getBaseContext(), MainActivity.class);
-                    startActivity(i);
-                    Toast.makeText(getBaseContext(), "Please login with your details.", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(getBaseContext(), "Please complete all fields.", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });*/
-
     }
 
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -190,6 +173,7 @@ public class Register extends AppCompatActivity {
     }
 
     private String getExt(Uri uri) {
+        //This method helps getting the extension of the image selected
         ContentResolver resolver = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(resolver.getType(uri));

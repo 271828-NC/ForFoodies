@@ -8,9 +8,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -35,7 +33,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-public class personalsettings extends AppCompatActivity {
+public class PersonalSettings extends AppCompatActivity {
     public static final int SELECT_PICTURE = 1;
     public static final String URL = "URL";
     Uri url;
@@ -70,14 +68,13 @@ public class personalsettings extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         // Get auth credentials from the user for re-authentication
         AuthCredential credential = EmailAuthProvider
-                .getCredential(CURRENT_EMAIL, CURRENT_PWD); // Current Login Credentials \\
-        // Prompt the user to re-provide their sign-in credentials
+                .getCredential(CURRENT_EMAIL, CURRENT_PWD); // Current Login Credentials
         user.reauthenticate(credential)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        //Now change your email address \\
-                        //----------------Code for Changing Email Address----------\\
+                        //Now change your email address
+                        //Code for Changing Email Address
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         user.updatePassword(npwd);
                         user.updateEmail(nmail);
@@ -161,7 +158,7 @@ public class personalsettings extends AppCompatActivity {
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     User u = ds.getValue(User.class);
                     if (u.equals(((logged) getApplication()).getLogged())) {
-                        path = ds.getKey();
+                        path = ds.getKey();//the path towards the user we want updates
                         break;
                     }
                 }
@@ -175,6 +172,7 @@ public class personalsettings extends AppCompatActivity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //get input of new details and validate them
                 final String fn = fname.getText().toString().trim();
                 final String ln = lname.getText().toString().trim();
                 final String log = login.getText().toString().trim();
@@ -215,13 +213,13 @@ public class personalsettings extends AppCompatActivity {
                         dbref.child(path).child("password").setValue(pwd);
                 }
                 if (email.getVisibility() == View.VISIBLE && password.getVisibility() == View.VISIBLE)
-                    reauth(mail, pwd);
+                    reauth(mail, pwd);//checking if both login credentials need to be updated
                 else if (email.getVisibility() == View.VISIBLE)
-                    reauth(mail, ((logged) getApplication()).getLogged().getPassword());
-                else if (password.getVisibility() == View.VISIBLE)
+                    reauth(mail, ((logged) getApplication()).getLogged().getPassword());//mail update
+                else if (password.getVisibility() == View.VISIBLE)//password update
                     reauth(((logged) getApplication()).getLogged().getEmail(), pwd);
-                if (ok == 1) {
-                    final StorageReference reference = sref.child(((logged) getApplication()).getLogged().getEmail() + "." + getExt(url));
+                if (ok == 1) {//picture upload validation
+                    final StorageReference reference = sref.child(((logged) getApplication()).getLogged().getEmail() + "." + getExt(url));//picture update
                     reference.putFile(url).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -237,8 +235,8 @@ public class personalsettings extends AppCompatActivity {
                     });
                 }
 
-                Toast.makeText(personalsettings.this, "Details Updated", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getBaseContext(), MainActivity.class));
+                Toast.makeText(PersonalSettings.this, "Details Updated", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getBaseContext(), Login.class));
 
 
             }

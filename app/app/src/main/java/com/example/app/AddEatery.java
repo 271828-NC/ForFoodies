@@ -33,10 +33,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class add_eatery extends AppCompatActivity {
+public class AddEatery extends AppCompatActivity {
 
     public static final int SELECT_PICTURE = 1;
-    //public static final int REQUEST = 1;
     public static final String URL = "URL";
     String s;
     Uri url;
@@ -45,6 +44,7 @@ public class add_eatery extends AppCompatActivity {
     ImageView add_image;
     Button complete;
     private String downloadURL;
+    //reference to  Firebase Database and Storage
     DatabaseReference dbref = FirebaseDatabase.getInstance().getReference("Eatery");
     StorageReference sref = FirebaseStorage.getInstance().getReference("images");
 
@@ -57,6 +57,7 @@ public class add_eatery extends AppCompatActivity {
         name = findViewById(R.id.et_name);
         location = findViewById(R.id.et_location);
         description = findViewById(R.id.et_description);
+        //Getting  the type of eatery we want to add from dashboard
         final String type = getIntent().getStringExtra("Type");
         veg = (RadioButton) findViewById(R.id.rb_veg);
         nveg = (RadioButton) findViewById(R.id.rb_nveg);
@@ -68,10 +69,6 @@ public class add_eatery extends AppCompatActivity {
         add_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent i = new Intent();
-                //i.setType("image/*");
-                //i.setAction(Intent.ACTION_GET_CONTENT);
-                //startActivityForResult(i, REQUEST);
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -85,6 +82,7 @@ public class add_eatery extends AppCompatActivity {
         complete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Getting the details for a eatery and validate them
                 final String n = name.getText().toString().trim();
                 if (TextUtils.isEmpty(n)) {
                     name.setError(" Name is required");
@@ -106,17 +104,18 @@ public class add_eatery extends AppCompatActivity {
                 else if (nveg.isChecked())
                     s = "Non-Vegetarian";
                 else
-                    Toast.makeText(add_eatery.this, "Select serving type", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddEatery.this, "Select serving type", Toast.LENGTH_SHORT).show();
 
-                final ArrayList<Eatery> check = new ArrayList<>();
+                final ArrayList<Eatery> check = new ArrayList<>();//An array list to store all the current eateries
                 Query dbref_check = FirebaseDatabase.getInstance().getReference("Eatery").orderByChild("name").equalTo(n);
+                //making a query in which we order to verify if the eatery we want to add is not already added
                 dbref_check.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot dss : snapshot.getChildren()) {
-                            check.add(dss.getValue(Eatery.class));
+                            check.add(dss.getValue(Eatery.class));//populating the list
                         }
-                        if (check.size() == 0) {
+                        if (check.size() == 0) {//if the list is empty we can  add the eatery
                             try {
                                 final StorageReference reference = sref.child(n + "." + getExt(url));
                                 reference.putFile(url).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -126,10 +125,10 @@ public class add_eatery extends AppCompatActivity {
                                             @Override
                                             public void onSuccess(Uri uri) {
                                                 downloadURL = uri.toString();
-                                                Eatery e = new Eatery(n, downloadURL, d, l, s, type, 0, 0);
+                                                Eatery e = new Eatery(n, downloadURL, d, l, s, type, 0, 0);//we create eatery with no ratings
                                                 dbref.child(dbref.push().getKey()).setValue(e);
-                                                Toast.makeText(add_eatery.this, "Eatery added !", Toast.LENGTH_SHORT).show();
-                                                startActivity(new Intent(getBaseContext(), dashboard.class));
+                                                Toast.makeText(AddEatery.this, "Eatery added !", Toast.LENGTH_SHORT).show();
+                                                startActivity(new Intent(getBaseContext(), Dashboard.class));
                                                 finish();
 
                                             }
@@ -147,15 +146,15 @@ public class add_eatery extends AppCompatActivity {
                                     }
                                 });
                             } catch (Exception e) {
-                                Toast.makeText(add_eatery.this, "Please add a picture!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddEatery.this, "Please add a picture!", Toast.LENGTH_SHORT).show();
                             }
 
-                        } else if (check.size() != 0) {
+                        } else if (check.size() != 0) {//if other eateries exist with that name we verify the location field
                             boolean exists = false;
                             for (int i = 0; i < check.size(); i++)
                                 if (l.compareToIgnoreCase(check.get(i).getLocation()) == 0)
                                     exists = true;
-                            if (exists == false) {
+                            if (exists == false) {//if the location is available then we can upload the eatery
                                 try {
                                     final StorageReference reference = sref.child(n + "." + getExt(url));
                                     reference.putFile(url).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -167,8 +166,8 @@ public class add_eatery extends AppCompatActivity {
                                                     downloadURL = uri.toString();
                                                     Eatery e = new Eatery(n, downloadURL, d, l, s, type, 0, 0);
                                                     dbref.child(dbref.push().getKey()).setValue(e);
-                                                    Toast.makeText(add_eatery.this, "Eatery added !", Toast.LENGTH_SHORT).show();
-                                                    startActivity(new Intent(getBaseContext(), dashboard.class));
+                                                    Toast.makeText(AddEatery.this, "Eatery added !", Toast.LENGTH_SHORT).show();
+                                                    startActivity(new Intent(getBaseContext(), Dashboard.class));
                                                     finish();
 
                                                 }
@@ -186,10 +185,10 @@ public class add_eatery extends AppCompatActivity {
                                         }
                                     });
                                 } catch (Exception e) {
-                                    Toast.makeText(add_eatery.this, "Please add a picture!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(AddEatery.this, "Please add a picture!", Toast.LENGTH_SHORT).show();
                                 }
                             } else
-                                Toast.makeText(add_eatery.this, "Eatery already exists !", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddEatery.this, "Eatery already exists !", Toast.LENGTH_SHORT).show();
                         }
                     }
 

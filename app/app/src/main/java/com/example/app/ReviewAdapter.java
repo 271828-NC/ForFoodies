@@ -21,7 +21,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
+//The review adapter  puts the list of eateries inside the recycle view
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.Reviewholder> {
     public ReviewAdapter(ArrayList<Review> list, User logged, ReviewAdapter.Reviewholder.OnCardClickedListener _listener) {
         this.list = list;
@@ -38,14 +38,14 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.Reviewhold
     @NonNull
     @Override
     public ReviewAdapter.Reviewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.read_review_card, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.read_review_card, parent, false);//select the format displayed
         ReviewAdapter.Reviewholder h = new ReviewAdapter.Reviewholder(v, listener);
         return h;
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ReviewAdapter.Reviewholder hold, final int position) {
-
+    //put information in the card
         dbref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -56,9 +56,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.Reviewhold
                         hold.tv2.setText(list.get(position).getReview());
                         Picasso.get().load(u.getUrl()).fit().into(hold.iv);
                         hold.rating.setRating(list.get(position).getRating());
-                        //((logged) Context.getApplicationContext()).getMy_id();
-//                        if((!u.getEmail().equals(log.getEmail()))&& log.getType()!=3)
-//                            hold.delete.setVisibility(View.GONE);
                     }
                 }
             }

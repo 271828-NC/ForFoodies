@@ -3,7 +3,7 @@ package com.example.app;
 import android.media.Image;
 import android.os.Parcel;
 import android.os.Parcelable;
-
+//class that holds the user
 public class User implements Parcelable {
     private String fName;
     private String lName;
